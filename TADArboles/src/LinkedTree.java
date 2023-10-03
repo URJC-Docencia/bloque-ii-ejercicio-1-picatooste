@@ -133,12 +133,14 @@ public class LinkedTree<E> implements NAryTree<E> {
 
     @Override
     public void attach(Position<E> p, NAryTree<E> t) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        TreeNode<E> node = checkPosition(p);
+
+        node.getChildren().add(t);
     }
 
     @Override
     public boolean isEmpty() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return size == 0;
     }
 
     @Override
@@ -148,17 +150,20 @@ public class LinkedTree<E> implements NAryTree<E> {
 
     @Override
     public Position<E> parent(Position<E> v) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        TreeNode<E> node =checkPosition(v);
+        return node.getParent();
     }
 
     @Override
     public Iterable<? extends Position<E>> children(Position<E> v) {
-        throw new UnsupportedOperationException("Not supported yet.");
+       TreeNode<E> node = checkPosition(v);
+       return node.getChildren();
     }
 
     @Override
     public boolean isInternal(Position<E> v) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        TreeNode<E> node = checkPosition(v);
+        return (node.getParent() != null && node.getChildren() != null);
     }
 
     @Override
