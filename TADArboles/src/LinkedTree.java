@@ -130,12 +130,17 @@ public class LinkedTree<E> implements NAryTree<E> {
         tree.size = computeSize(node);
         return tree;
     }
-
+    private LinkedTree<E> checkTree(NAryTree<E> t){
+        if (!(t instanceof LinkedTree)){
+            throw new RuntimeException("The tree is invalid");
+        }return (LinkedTree<E>) t;
+    }
     @Override
     public void attach(Position<E> p, NAryTree<E> t) {
         TreeNode<E> node = checkPosition(p);
-
-        node.getChildren().add(t);
+        LinkedTree<E> tree = checkTree(t);
+        node.getChildren().addAll(tree.root.getChildren());
+        size+= tree.size();
     }
 
     @Override
@@ -168,7 +173,8 @@ public class LinkedTree<E> implements NAryTree<E> {
 
     @Override
     public boolean isLeaf(Position<E> v) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        TreeNode<E> node = checkPosition(v);
+        return node.getChildren().isEmpty();
     }
 
     @Override
@@ -183,7 +189,39 @@ public class LinkedTree<E> implements NAryTree<E> {
 
         return positions.iterator();
     }
+    private Iterator<Position<E>> iteratorPreorder(){
+        if (isEmpty()){
+            return new ArrayList<Position<E>>().iterator();
+        }
+        List<Position<E>> positions = new ArrayList<>();
+        preOrderTransveral(root,positions);
+        return positions.iterator();
+    }
+    private void preOrderTransveral(TreeNode<E> node,List<Position<E>> positions){
+        if(node != null){
+            positions.add(node);
+            for(TreeNode<E> child : node.getChildren()){
+                preOrderTransveral(child,positions);
+            }
 
+        }
+    }
+    private Iterator<Position<E>> iteratorPostorder(){
+        if (isEmpty()){
+            return new ArrayList<Position<E>>().iterator();
+        }
+        List<Position<E>> positions = new ArrayList<>();
+        postOrderTransveral(root,positions);
+        return positions.iterator();
+    }
+    private void postOrderTransveral(TreeNode<E> node,List<Position<E>> positions){
+        if(node != null){
+            for(TreeNode<E> child : node.getChildren()){
+                postOrderTransveral(child,positions);
+            }
+            positions.add(node);
+        }
+    }
     private void breathOrder(TreeNode<E> node, List<Position<E>> positions) {
         if(node != null){
             List<TreeNode<E>> queue = new ArrayList<>();
